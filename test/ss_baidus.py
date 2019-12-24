@@ -23,8 +23,11 @@ def KeywordRank(searchTxt, site):
         doc = pq(searchTxt)
         divs = doc('.c-container')
         for index, div in enumerate(divs.items(), start=1):
-            alink = div.find('h3 a')
-            print(div.find('h3').text())
+            alink = div.children('h3').children('a')
+            if not alink:
+                print('特殊数据！！！')
+                continue
+            print(alink.text())
             href = alink.attr('href')
             requests.packages.urllib3.disable_warnings()
             href_data = requests.get(href.rstrip(), verify=False)
@@ -56,7 +59,7 @@ if __name__ == "__main__":
     # keyword = input(u"请输入你要查询的关键字:")
     # site = input("请输入您要查询的网址:")
     keyword = '星宇'
-    site = 'space.bilibili.com/52038691'
+    site = 'tieba.baidu.com'
 
     # 最多查到第 10 页
     max_page = 10
@@ -72,5 +75,4 @@ if __name__ == "__main__":
         page = page + 1
         time.sleep(0.2)
     if page >= max_page:
-        print(page)
         print('排名在100+')
