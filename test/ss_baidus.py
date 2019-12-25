@@ -32,8 +32,10 @@ def KeywordRank(searchTxt, site):
             requests.packages.urllib3.disable_warnings()
             href_data = requests.get(href.rstrip(), verify=False)
             item_str = href_data.url
+
+            # item_str = div.find('.c-showurl').text() # 这个方式 普通站点还是能找到 url （百度快照）
             if site in item_str:
-                return index
+                return (index, item_str)
     except Exception as e:
         print(e)
 
@@ -58,8 +60,8 @@ def BaiduSearch(content, page):
 if __name__ == "__main__":
     # keyword = input(u"请输入你要查询的关键字:")
     # site = input("请输入您要查询的网址:")
-    keyword = '星宇'
-    site = 'tieba.baidu.com'
+    keyword = '众创'
+    site = '3vcg.com'
 
     # 最多查到第 10 页
     max_page = 10
@@ -69,8 +71,11 @@ if __name__ == "__main__":
         searchTxt = BaiduSearch(keyword, page)
         rank = KeywordRank(searchTxt, site)
         if None != rank:
-            print(u"输入的关键词排在 https://www.baidu.com 第 %d 名" % (rank + page * 10))
-            print(rank)
+            print('========================查询结果========================\n\n')
+            print(f"输入的关键词{keyword}在 https://www.baidu.com 的排名：\n")
+            search_data = f'第{page+1}页,排名：{(rank[0] + page * 10)},链接：{rank[1]}'
+            print(search_data)
+            print('\n\n========================查询结束========================\n')
             break
         page = page + 1
         time.sleep(0.2)
