@@ -28,12 +28,13 @@ def KeywordRank(searchTxt, site):
                 print('特殊数据！！！')
                 continue
             print(alink.text())
-            href = alink.attr('href')
-            requests.packages.urllib3.disable_warnings()
-            href_data = requests.get(href.rstrip(), verify=False)
-            item_str = href_data.url
 
-            # item_str = div.find('.c-showurl').text() # 这个方式 普通站点还是能找到 url （百度快照）
+            # href = alink.attr('href')
+            # requests.packages.urllib3.disable_warnings()
+            # href_data = requests.get(href.rstrip(), verify=False)
+            # item_str = href_data.url
+
+            item_str = div.find('.c-showurl').text() # 这个方式 普通站点还是能找到 url （百度快照）
             if site in item_str:
                 return (index, item_str)
     except Exception as e:
@@ -60,8 +61,8 @@ def BaiduSearch(content, page):
 if __name__ == "__main__":
     # keyword = input(u"请输入你要查询的关键字:")
     # site = input("请输入您要查询的网址:")
-    keyword = '众创'
-    site = '3vcg.com'
+    keyword = '姿宇'
+    site = '11467.com'
 
     # 最多查到第 10 页
     max_page = 10
