@@ -173,7 +173,7 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
-test*
+
 
 project.egg-info
 
