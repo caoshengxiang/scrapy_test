@@ -61,8 +61,8 @@ def BaiduSearch(content, page):
 if __name__ == "__main__":
     # keyword = input(u"请输入你要查询的关键字:")
     # site = input("请输入您要查询的网址:")
-    keyword = '灰胖饮品'
-    site = 'huipang.top'
+    keyword = '星宇'
+    site = 'xysydata'
 
     # 最多查到第 10 页
     max_page = 30

@@ -11,6 +11,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from pyquery import PyQuery as pq
 from multiprocessing.dummy import Pool
 from selenium.webdriver.chrome.options import Options
+from faker import Faker
+faker=Faker('zh_CN')
 
 
 def KeywordRank(searchTxt, site):
@@ -82,52 +84,40 @@ def RandomUserAgent():
     return random.choice(user_agent_list)
 
 
-def window_handles_to_last(driver):
-    try:
-        # 获取当前所有窗口句柄（窗口A、B）
-        handles = driver.window_handles
-        handles_len = len(handles)
-        if handles_len > 1:
-            driver.switch_to.window(handles[handles_len - 1])
-        else:
-            pass
-    except Exception as e:
-        pass
-
-
-# driver, 初始handle
-def window_handles_to_new(driver, handle):
-    try:
-        # 获取当前所有窗口句柄（窗口A、B）
-        handles = driver.window_handles
-        # 对窗口进行遍历
-        for newhandle in handles:
-            # 筛选新打开的窗口B
-            if newhandle != handle:
-                # 切换到新打开的窗口B
-                driver.switch_to.window(newhandle)
-        return driver
-    except Exception as e:
-        return driver
-
-
 def SEO_BAIDU(PARAMS):
-    (maxPage, site, keyword, clickNum, not_keyword_site) = PARAMS
+    (maxPage, site, keyword, clickNum, not_keyword_site, sleep, about_sites) = PARAMS
     current_page = 1
     proxy = '127.0.0.1:24000'  # 代理ip
     print(proxy)
     ua = RandomUserAgent()
+    # ua = faker.chrome()
     print(ua)
 
-    ops = Options()
+    option = Options()
 
-    ops.add_argument('--user-agent=%s' % ua)
+    option.add_argument('--user-agent=%s' % ua)
     # ops.add_argument('--proxy-server=http://%s' % proxy)
-    # driver = webdriver.Chrome(path=r"/root/chromedriver", options=ops)
-    driver = webdriver.Chrome(options=ops)
+    # option.add_argument('--headless')
+    # option.add_argument('--disable-gpu')
 
-    # driver.get('http://httpbin.org/ip')
-    # time.sleep(1)
+    # 禁止加载图片
+    # prefs = {
+    #     'profile.default_content_setting_values.images': 2
+    # }
+    # option.add_experimental_option('prefs', prefs)
+
+    # window.navigator.webdriver的值为 true的问题，在右上角会弹出一个提示，不用管它，不要点击停用按钮。
+    option.add_experimental_option('excludeSwitches', ['enable-automation'])
+
+    # driver = webdriver.Chrome(path=r"/root/chromedriver", options=ops)
+    driver = webdriver.Chrome(options=option)
+
+    # times_getip = 30
+    # while times_getip > 0:
+    #     driver.get('http://httpbin.org/ip')
+    #     time.sleep(1)
+    #     times_getip -= 1
+    # time.sleep(300)
 
     driver.get('https://www.baidu.com/')
     time.sleep(1)
@@ -187,46 +177,92 @@ def SEO_BAIDU(PARAMS):
                         # driver = window_handles_to_new(driver)
 
                         ###################### 模拟
-                        random_time = random.randint(20, 600)
+                        random_time = random.randint(sleep[0], sleep[1])
                         print(f'目标停留{random_time} s')
                         time.sleep(random_time)  # 目标站点停留
-                        ######################
+                        ###################### 模拟
+
+                        print('目标模拟-第二步-跳出率')
+
+                        ###################### 模拟
+                        ram2 = random.randint(1, 3)
+                        rad_s = random.sample(about_sites, 3)
+
+                        driver.get(rad_s[1])
+                        time.sleep(random.randint(sleep[0], sleep[1]))
+                        if ram2 > 1:
+                            driver.get(rad_s[1])
+                            time.sleep(random.randint(sleep[0], sleep[1]))
+                        if ram2 > 2:
+                            driver.get(rad_s[2])
+                            time.sleep(random.randint(sleep[0], sleep[1]))
+                        print(f'随机访问{ram2}个页面')
+                        ###################### 模拟
 
                         driver.close()
                         driver.switch_to.window(handle)
-                        time.sleep(1)
+                        time.sleep(random.choice([0.5, 0.6, 0.8, 0.9, 1, 1.2, 1.4, 1.5, 1.8, 2]))
+
+                        ###################### 模拟
+                        ram3 = random.randint(1, 3)
+                        if ram3 > 0:
+                            items = driver.find_elements_by_css_selector('.c-container')
+                            random_test_num = random.randint(0, 6)
+                            items[random_test_num].find_element_by_css_selector('h3 a').click()
+                            try:
+                                # 获取当前所有窗口句柄（窗口A、B）
+                                handles = driver.window_handles
+                                # 对窗口进行遍历
+                                for newhandle in handles:
+                                    # 筛选新打开的窗口B
+                                    if newhandle != handle:
+                                        # 切换到新打开的窗口B
+                                        driver.switch_to.window(newhandle)
+                            except Exception as e:
+                                pass
+                            random_test_time = random.choice([1, 1.5, 1.8, 2, 2.1, 2.5, 2.7, 3])
+                            print(f'test 2站点停留{random_test_time} s')
+                            time.sleep(random_test_time)  # test站点停留
+                            driver.close()
+                            driver.switch_to.window(handle)
+                            time.sleep(
+                                random.choice([0.5, 0.8, 0.9, 1, 1.2, 1.4, 1.5, 1.8, 2, 2.2, 2.4, 2.6, 2.7, 2.8, 3]))
+                        ###################### 模拟
                     break
                 else:
                     ###################### 模拟
-                    items = driver.find_elements_by_css_selector('.c-container')
-                    random_test_num = random.randint(0, 6)
-                    items[random_test_num].find_element_by_css_selector('h3 a').click()
-                    try:
-                        # 获取当前所有窗口句柄（窗口A、B）
-                        handles = driver.window_handles
-                        # 对窗口进行遍历
-                        for newhandle in handles:
-                            # 筛选新打开的窗口B
-                            if newhandle != handle:
-                                # 切换到新打开的窗口B
-                                driver.switch_to.window(newhandle)
-                    except Exception as e:
-                        pass
-                    random_test_time = random.choice([0.2, 0.5, 0.8, 1, 1.5, 1.8, 2])
-                    print(f'test站点停留{random_test_time} s')
-                    time.sleep(random_test_time)  # test站点停留
-                    driver.close()
-                    driver.switch_to.window(handle)
-                    time.sleep(0.2)
+                    ram3 = random.randint(1, 3)
+                    if ram3 >= 1:
+                        items = driver.find_elements_by_css_selector('.c-container')
+                        random_test_num = random.randint(0, 6)
+                        items[random_test_num].find_element_by_css_selector('h3 a').click()
+                        try:
+                            # 获取当前所有窗口句柄（窗口A、B）
+                            handles = driver.window_handles
+                            # 对窗口进行遍历
+                            for newhandle in handles:
+                                # 筛选新打开的窗口B
+                                if newhandle != handle:
+                                    # 切换到新打开的窗口B
+                                    driver.switch_to.window(newhandle)
+                        except Exception as e:
+                            pass
+                        random_test_time = random.choice([0.5, 0.8, 1, 1.5, 1.8, 2, 2.1, 2.2, 2.4])
+                        print(f'test站点停留{random_test_time} s')
+                        time.sleep(random_test_time)  # test站点停留
+                        driver.close()
+                        driver.switch_to.window(handle)
+                        time.sleep(0.2)
                     ###################### 模拟
 
                     print(f'第{current_page}页，未找到目标')
                     driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-                    time.sleep(0.5)
+                    time.sleep(
+                        random.choice([0.5, 0.6, 0.8, 0.9, 1, 1.2, 1.4, 1.5, 1.8, 2, 2.2, 2.4, 2.5, 2.6, 2.7, 2.8]))
                     page_ele = driver.find_element_by_id('page')
                     next_page_ele = page_ele.find_element_by_link_text('下一页>')
                     next_page_ele.click()
-                    time.sleep(2)
+                    time.sleep(1)
                     current_page += 1
             except Exception as e:
                 pass
@@ -237,25 +273,25 @@ def SEO_BAIDU(PARAMS):
             tindex = clickNum  # 制造五次直接访问击量
             if not_keyword_site:
                 while tindex > 0:
-                    driver.get(not_keyword_site)
+                    driver.get(random.choice(not_keyword_site))
                     ###################### 模拟
-                    random_time = random.randint(20, 300)
+                    random_time = random.randint(sleep[0], sleep[1])
                     print(f'目标停留{random_time} s')
                     time.sleep(random_time)  # 目标站点停留
                     ######################
                     tindex -= 1
 
-                    ###################### 模拟-个性化
-                    random_height = random.randint(30, 200)
+                    ###################### 模拟
+                    random_height = random.randint(sleep[0], sleep[1])
                     driver.execute_script(f"window.scrollTo(0,{random_height})")
                     time.sleep(0.5)
-                    # target_bar = driver.find_elements_by_css_selector('.weui-tabbar a')
-                    # target_bar = driver.find_elements_by_css_selector('a')
-                    # target_bar_len = len(target_bar)
-                    # target_index = random.randint(0, target_bar_len)
-                    # target_bar[target_index].click()
-                    time.sleep(0.5)
-                    ###################### 模拟-个性化
+                    for i in range(1, 3):
+                        driver.get(random.choice(not_keyword_site))
+                        time.sleep(random.randint(sleep[0], sleep[1]))
+                    ###################### 模拟
+                    driver.get('https://www.baidu.com/')
+                    time.sleep(
+                        random.choice([0.5, 0.6, 0.8, 0.9, 1, 1.2, 1.4, 1.5, 1.8, 2, 2.2, 2.4, 2.5, 2.6, 2.7, 2.8]))
 
         driver.quit()
     except Exception as e:
@@ -265,20 +301,46 @@ def SEO_BAIDU(PARAMS):
 
 if __name__ == '__main__':
     # 变量配置
-    max_page = 5  # 查询最大页数
-    site = 'xysydata.com'  # 目标域名,不包含 httt:\\ 和 www 的域名，如 baidu.com
-    not_keyword_site = 'http://www.xysydata.com/#/'  # 再运行目标内无关键字，直接访问目标站点
-    keywords = ['星宇数云数据采集', '星宇数云', '星宇数云科技', '星宇数云数据分析', '星宇数云ERP OA', '星宇数云 网络爬虫', '星宇数云 数据清洗']  # 关键字 ['星宇', '星宇数云', '成都星宇数云科技有限公司', '星宇数云科技', '成都星宇数云科技', '星宇数云数据采集']
-    run_times = 2  # 一个关键词的启动次数
-    click_num = 2  # 单次启动 目标 点击次数
-    pool = Pool(4)  # 进程
+    # max_page = 30  # 查询最大页数
+    # site = 'xysydata.com'  # 目标域名,不包含 httt:\\ 和 www 的域名，如 baidu.com
+    # not_keyword_site = ['http://www.xysydata.com/#/']  # 再运行目标内无关键字，直接访问目标站点
+    # keywords = ['星宇数云 数据采集', '星宇数云', '星宇数云科技', '星宇数云数据分析', '星宇数云ERP OA', '星宇数云 网络爬虫',
+    #             '星宇数云 数据清洗']  # 关键字
+    # run_times = 3  # 一个关键词的启动次数
+    # click_num = 20  # 单次启动 目标 点击次数
+    # pool = Pool(1)  # 进程
+    # sleep = [30, 300] # 目标页面停留时间范围
+    # about_sites = [] # 目标站点 子页面 随机1-3个， about_sites必须大于三
+
+    # 变量配置 site 2
+    max_page = 1  # 查询最大页数
+    site = 'huipang.top'
+    not_keyword_site = [
+        'http://huipang.top',
+        'http://huipang.top/m/home',
+        'http://huipang.top/m/reserve',
+        'http://huipang.top/m/account',
+    ]
+    keywords = ['灰胖饮品']
+    #
+
+    run_times = 1  # 一个关键词的启动次数
+    click_num = 3  # 单次启动 目标 点击次数
+    pool = Pool(1)  # 进程
+    sleep = [4, 100]  # 目标页面停留时间范围
+    about_sites = [  # 目标站点 子页面 随机1-3个， about_sites必须大于三
+        'http://huipang.top',
+        'http://huipang.top/m/home',
+        'http://huipang.top/m/reserve',
+        'http://huipang.top/m/account',
+    ]
 
     start_time = time.time()
 
     params = []
     for i in range(run_times):
         for keyword in keywords:
-            params.append((max_page, site, keyword, click_num, not_keyword_site))
+            params.append((max_page, site, keyword, click_num, not_keyword_site, sleep, about_sites))
     # print(params)
     pool.map(SEO_BAIDU, params)  # 只能传一个参数
 

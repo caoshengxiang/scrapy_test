@@ -245,3 +245,24 @@ result.get('key')
 # 生成依赖文件 - 安装依赖
 pip3 freeze > requirements.txt
 pip3 install -r requirements.txt
+
+
+# 虚拟环境管理python依赖包
+
+1. 项目根目录
+```
+python -m venv env
+```
+2. 激活
+```
+window平台:
+env\scripts\activate
+
+Linux/macOS:
+source env/bin/activate
+```
+>成功激活后你会发现你的命令行前面会有一个（env）的提示，表明你当前正在虚拟环境
+>
+
+3. 我们使用下面的命令就可以退出虚拟环境：
+`deactivate`
