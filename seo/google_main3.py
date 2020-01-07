@@ -11,26 +11,22 @@ def SEO_GOOGLE(param):
 
 def google_run():
     # 变量配置
-    name = 'g西安蓝深环保科技有限公司-【官网】'
-    max_page = 20  # 查询最大页数
-    site_url_keyword = 'lanshn.com'
+    name = 'g硬蛋'
+    max_page = 30  # 查询最大页数
+    site_url_keyword = 'https://www.ingdan.com'
     site_urls = [  # 目标站点 子页面 随机1-3个，必须大于三
-        'http://www.lanshn.com',
-        'http://www.lanshn.com',
-        'http://www.lanshn.com',
-        'http://www.lanshn.com/aboyt/gsjj/',
-        'http://www.lanshn.com/aboyt/gsjj/',
-        'http://www.lanshn.com/aboyt/zzry/',
-        'http://www.lanshn.com/xwzx/qyxw/',
-        'http://www.lanshn.com/xwzx/qyxw/',
-        'http://www.lanshn.com/jjfa2/',
-        'http://www.lanshn.com/hxjs/',
-        'http://www.lanshn.com/xwzx/qyxw/124.html',
+        'https://www.ingdan.com/',
+        'https://www.ingdan.com/',
+        'https://www.ingdan.com/',
+        'https://biz.ingdan.com/home/search_product',
+        'https://biz.ingdan.com/knowledge/',
+        'https://biz.ingdan.com/link/',
+        'https://biz.ingdan.com/#machining',
     ]
-    keywords = ['环保科技']
+    keywords = ['科技']
 
     run_times = 5 * 12  # 一个关键词的启动次数
-    click_num = 1  # 单次启动 目标 点击次数
+    click_num = 3  # 单次启动 目标 点击次数
     pool = Pool(1)  # 进程
     sleep = [30, 300]  # 目标页面停留时间范围
 

@@ -16,7 +16,8 @@ faker = Faker('zh_CN')
 
 class SEO(object):
     def __init__(self, PARAMS):
-        (self.maxPage, self.site_url_keyword, self.keyword, self.clickNum, self.site_urls, self.sleep) = PARAMS
+        (self.name, self.maxPage, self.site_url_keyword, self.keyword, self.clickNum, self.site_urls,
+         self.sleep) = PARAMS
 
         self.__current_page = 1
         self.__proxy = '127.0.0.1:24000'  # 代理ip
@@ -120,7 +121,7 @@ class SEO(object):
     # 随机停留
     @staticmethod
     def random_sleep():
-        sleep_t = random.randint(10, 50) / 10
+        sleep_t = random.randint(30, 60 * 2) / 10
         print(f'随机停留 {sleep_t} s')
         time.sleep(sleep_t)
 
@@ -137,34 +138,37 @@ class SEO(object):
 
     def print_log(self, msg):
         now_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-        with open(self.keyword + "-log.txt", encoding='utf-8', mode="a") as f:
-            f.write(msg + '    时间：' + now_time + '\n')  # 这句话自带文件关闭功能，不需要再写f.close()
+        with open(self.name + "-log.txt", encoding='utf-8', mode="a") as f:
+            f.write(self.name + '----' + msg + '    时间：' + now_time + '\n')  # 这句话自带文件关闭功能，不需要再写f.close()
 
     def init_selenium(self):
 
         option = Options()
 
         option.add_argument('--user-agent=%s' % self.__ua)
-        # option.add_argument('--proxy-server=http://%s' % self.__proxy)
+        option.add_argument('--proxy-server=http://%s' % self.__proxy)
         # option.add_argument('--headless')
         # option.add_argument('--disable-gpu')
 
-        # 禁止加载图片
+        # 禁止加载图片, css
         prefs = {
-            'profile.default_content_setting_values.images': 2
+            'profile.default_content_setting_values.images': 2,
+            'permissions.default.stylesheet': 2
         }
-        # option.add_experimental_option('prefs', prefs)
+        option.add_experimental_option('prefs', prefs)
 
         # window.navigator.webdriver的值为 true的问题，在右上角会弹出一个提示，不用管它，不要点击停用按钮。
         option.add_experimental_option('excludeSwitches', ['enable-automation'])
 
-        # self.driver = webdriver.Chrome(path=r"/root/chromedriver", options=ops)
-        self.driver = webdriver.Chrome(options=option)
+        self.driver = webdriver.Chrome("\opt\chromedriver.exe", options=option)
+        # self.driver = webdriver.Chrome(options=option)
 
     # 百度 当前页 随机点击 test 站点
     def baidu_click_test_site(self):
         ram3 = random.randint(0, 3)
+        print(f'测试站点数：{ram3}')
         while ram3 > 0:
+            print('点击test站点')
             ram3 -= 1
             items = self.driver.find_elements_by_css_selector('.c-container')
             random_test_num = random.randint(0, 6)
@@ -172,28 +176,29 @@ class SEO(object):
 
             self.baidu_open_new_tab_page()
 
-            random_test_time = random.choice([0.5, 0.8, 1, 1.5, 1.8, 2, 2.1, 2.2, 2.4])
+            random_test_time = random.choice([1.5, 3.8, 2, 2.5, 2.8, 3, 3.1, 3.2, 3.4])
             print(f'test站点停留{random_test_time} s')
             time.sleep(random_test_time)  # test站点停留
             self.driver.close()
             self.driver.switch_to.window(self.handle)
-            time.sleep(0.2)
+            time.sleep(1)
 
     # GOOGLE 当前页 随机点击 test 站点
     def google_click_test_site(self):
         ram3 = random.randint(1, 3)
+        print(f'测试站点数：{ram3}')
         if ram3 >= 1:
             print('点击test站点')
             items = self.driver.find_elements_by_css_selector('.g')
             random_test_num = random.randint(0, 6)
             items[random_test_num].find_element_by_css_selector('.r > a').click()
 
-            random_test_time = random.choice([0.2, 0.5, 0.8, 1, 1.5, 1.8, 2])
+            random_test_time = random.choice([1.5, 3.8, 2, 2.5, 2.8, 3, 3.1, 3.2, 3.4])
             print(f'test站点停留{random_test_time} s')
             time.sleep(random_test_time)  # test站点停留
             self.driver.back()
 
-            time.sleep(0.2)
+            time.sleep(1)
 
     # 百度 跳新开标签页
     def baidu_open_new_tab_page(self):
@@ -220,6 +225,7 @@ class SEO(object):
         ram2 = random.randint(1, 3)
         rad_s = random.sample(self.site_urls, 3)
 
+        print(f'随机访问{ram2}个页面')
         self.driver.get(rad_s[1])
         self.target_site_sleep()  # 目标 随机停留
         if ram2 > 1:
@@ -228,11 +234,10 @@ class SEO(object):
         if ram2 > 2:
             self.driver.get(rad_s[2])
             self.target_site_sleep()  # 目标 随机停留
-        print(f'随机访问{ram2}个页面')
 
     # 百度
     def open_baidu_engine(self, url='https://www.baidu.com/'):
-
+        not_included = False
         if self.driver is None:
             self.init_selenium()
         self.driver.get(url)
@@ -297,11 +302,14 @@ class SEO(object):
                         self.baidu_click_test_site()  # 当前页 随机点击一个test 站点
                     break
                 else:
+                    print(f'第{self.__current_page}页，未找到目标')
+
                     self.baidu_click_test_site()  # 当前页 随机点击一个test 站点
 
-                    print(f'第{self.__current_page}页，未找到目标')
                     self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-                    self.random_sleep()  # 随机停留
+
+                    time.sleep(1)
+
                     page_ele = self.driver.find_element_by_id('page')
                     next_page_ele = page_ele.find_element_by_link_text('下一页>')
                     next_page_ele.click()
@@ -318,11 +326,13 @@ class SEO(object):
 
                 self.driver.get(url)
                 self.random_sleep()  # 随机停留
+                self.driver.quit()
 
         self.driver.quit()
 
     # GOOGLE
     def open_google_engine(self, url='https://www.google.com/'):
+        global not_included
         if self.driver is None:
             self.init_selenium()
         self.driver.get(url)
@@ -343,12 +353,12 @@ class SEO(object):
                 time.sleep(1)
 
             except Exception as e:
-                pass
+                self.driver.quit()
 
             try:
-                WebDriverWait(self.driver, 20).until(EC.visibility_of_element_located((By.ID, 'navcnt')))
+                WebDriverWait(self.driver, 30).until(EC.visibility_of_element_located((By.ID, 'navcnt')))
             except Exception as e:
-                pass
+                self.driver.quit()
 
             while self.__current_page <= self.maxPage:
                 try:
@@ -384,7 +394,7 @@ class SEO(object):
                         self.google_click_test_site()  # 当前页 随机点击一个test 站点
 
                         self.driver.execute_script("window.scrollTo(0,document.body.scrollHeight)")
-                        time.sleep(0.5)
+                        time.sleep(1)
 
                         """
                             用来判断元素标签是否存在，
@@ -395,6 +405,8 @@ class SEO(object):
                         except NoSuchElementException as e:
                             # 发生了NoSuchElementException异常，说明页面中未找到该元素，返回False
                             print('无 下一页')
+                            self.print_log(f'{self.site_url_keyword}-{self.keyword}: 目标关键字未被收录')
+                            not_included = True
                             break
                         else:
                             # 没有发生异常，表示在页面中找到了该元素，返回True
@@ -406,7 +418,9 @@ class SEO(object):
 
                 except Exception as e:
                     pass
-            if self.__current_page > self.maxPage:
+            if not_included:
+                pass
+            elif self.__current_page > self.maxPage:
                 print(f'目标超出{self.maxPage}页')
 
                 # 直接请求目标域名

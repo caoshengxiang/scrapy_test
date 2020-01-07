@@ -266,3 +266,7 @@ source env/bin/activate
 
 3. 我们使用下面的命令就可以退出虚拟环境：
 `deactivate`
+
+## pyinstall 打包exe
+> pyinstaller -F app.py
+>pyinstaller -D app.py
