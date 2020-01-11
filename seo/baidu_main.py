@@ -5,32 +5,22 @@ from multiprocessing.dummy import Pool
 def SEO_BAIDU(param):
     seo = SEO(param)
     seo.getVar()
-    seo.run_sleep(60 * 10, 60 * 30)  # 启动延时 范围 默认 start=2 end=5
-    seo.open_baidu_engine()
+
+    seo.open_baidu_engine(sleep_stop=[60 * 30, 60 * 40])
 
 
 def baidu_run():
     # 变量配置 site 2
-    name = 'b阿斯旺(北京)环保科技有限公司'
+    name = 'b安徽中发环保科技有限公司'
     max_page = 30  # 查询最大页数
-    site_url_keyword = 'xjdean.com'
+    site_url_keyword = 'ahzhongfa.com'
     site_urls = [  # 目标站点 子页面 随机1-3个，必须大于三
-        'http://www.aswater.com.cn/',
-        'http://www.aswater.com.cn/',
-        'http://www.aswater.com.cn/',
-        'http://www.aswater.com.cn/',
-        'http://www.aswater.com.cn/',
-        'http://www.aswater.com.cn/page188',
-        'http://www.aswater.com.cn/page188',
-        'http://www.aswater.com.cn/page188',
-        'http://www.aswater.com.cn/page196?article_id=214',
-        'http://www.aswater.com.cn/page198',
-        'http://www.aswater.com.cn/page197',
-        'http://www.aswater.com.cn/page206',
-        'http://www.aswater.com.cn/page207',
-        'http://www.aswater.com.cn/page199',
-        'http://www.aswater.com.cn/page191',
-        'http://www.aswater.com.cn/page205',
+        'http://www.ahzhongfa.com/page9',
+        'http://www.ahzhongfa.com/page3',
+        'http://www.ahzhongfa.com/page36',
+        'http://www.ahzhongfa.com/page26',
+        'http://www.ahzhongfa.com/page7',
+        'http://www.ahzhongfa.com/',
     ]
     keywords = ['环保科技']
 

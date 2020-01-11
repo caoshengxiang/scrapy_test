@@ -5,9 +5,9 @@ from multiprocessing.dummy import Pool
 def SEO_BAIDU(param):
     seo = SEO(param)
     seo.getVar()
-    seo.run_sleep(60 * 10, 60 * 20)  # 启动延时 范围 默认 start=2 end=5
-    seo.open_baidu_engine()
 
+    seo.open_baidu_engine()
+    seo.run_sleep(60 * 10, 60 * 20)  # 启动延时 范围 默认 start=2 end=5
 
 def baidu_run():
     # 变量配置 site 2

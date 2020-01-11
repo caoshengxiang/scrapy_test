@@ -125,15 +125,22 @@ class SEO(object):
         print(f'随机停留 {sleep_t} s')
         time.sleep(sleep_t)
 
+    # 随机停留
+    @staticmethod
+    def test_random_sleep():
+        sleep_t = random.randint(10, 20)
+        print(f'test站点随机停留 {sleep_t} s')
+        time.sleep(sleep_t)
+
     def getVar(self):
         print(self.__ua)
-        print(self.__proxy)
+        # print(self.__proxy)
 
     # 启动延时
     @staticmethod
     def run_sleep(start=2, end=5):
         run_sleep_time = random.randint(start, end)
-        print(f'启动延时{run_sleep_time} s')
+        print(f'延时{run_sleep_time} s')
         time.sleep(run_sleep_time)
 
     def print_log(self, msg):
@@ -146,7 +153,7 @@ class SEO(object):
         option = Options()
 
         option.add_argument('--user-agent=%s' % self.__ua)
-        option.add_argument('--proxy-server=http://%s' % self.__proxy)
+        # option.add_argument('--proxy-server=http://%s' % self.__proxy)
         # option.add_argument('--headless')
         # option.add_argument('--disable-gpu')
 
@@ -155,13 +162,16 @@ class SEO(object):
             'profile.default_content_setting_values.images': 2,
             'permissions.default.stylesheet': 2
         }
-        option.add_experimental_option('prefs', prefs)
+        # option.add_experimental_option('prefs', prefs)
 
         # window.navigator.webdriver的值为 true的问题，在右上角会弹出一个提示，不用管它，不要点击停用按钮。
         option.add_experimental_option('excludeSwitches', ['enable-automation'])
 
         self.driver = webdriver.Chrome("\opt\chromedriver.exe", options=option)
         # self.driver = webdriver.Chrome(options=option)
+
+        # self.driver.set_page_load_timeout(2)
+        # self.driver.set_script_timeout(2)  # 这两种设置都进行才有效
 
     # 百度 当前页 随机点击 test 站点
     def baidu_click_test_site(self):
@@ -176,9 +186,8 @@ class SEO(object):
 
             self.baidu_open_new_tab_page()
 
-            random_test_time = random.choice([1.5, 3.8, 2, 2.5, 2.8, 3, 3.1, 3.2, 3.4])
-            print(f'test站点停留{random_test_time} s')
-            time.sleep(random_test_time)  # test站点停留
+            self.test_random_sleep()  # 测试站点随机停留
+
             self.driver.close()
             self.driver.switch_to.window(self.handle)
             time.sleep(1)
@@ -193,9 +202,8 @@ class SEO(object):
             random_test_num = random.randint(0, 6)
             items[random_test_num].find_element_by_css_selector('.r > a').click()
 
-            random_test_time = random.choice([1.5, 3.8, 2, 2.5, 2.8, 3, 3.1, 3.2, 3.4])
-            print(f'test站点停留{random_test_time} s')
-            time.sleep(random_test_time)  # test站点停留
+            self.test_random_sleep()  # 测试站点随机停留
+
             self.driver.back()
 
             time.sleep(1)
@@ -236,7 +244,7 @@ class SEO(object):
             self.target_site_sleep()  # 目标 随机停留
 
     # 百度
-    def open_baidu_engine(self, url='https://www.baidu.com/'):
+    def open_baidu_engine(self, url='https://www.baidu.com/', sleep_stop=[2, 5]):
         not_included = False
         if self.driver is None:
             self.init_selenium()
@@ -326,12 +334,15 @@ class SEO(object):
 
                 self.driver.get(url)
                 self.random_sleep()  # 随机停留
+
                 self.driver.quit()
+                self.run_sleep(sleep_stop[0], sleep_stop[1])
 
         self.driver.quit()
+        self.run_sleep(sleep_stop[0], sleep_stop[1])
 
     # GOOGLE
-    def open_google_engine(self, url='https://www.google.com/'):
+    def open_google_engine(self, url='https://www.google.com/', sleep_stop=[2, 5]):
         global not_included
         if self.driver is None:
             self.init_selenium()
@@ -435,9 +446,11 @@ class SEO(object):
                         self.driver.get(url)
                         self.random_sleep()  # 随机停留
             self.driver.quit()
+            self.run_sleep(sleep_stop[0], sleep_stop[1])
         except Exception as e:
             print(e)
             self.driver.quit()
+            self.run_sleep(sleep_stop[0], sleep_stop[1])
 
 
 # 下面是调用实例 百度和google

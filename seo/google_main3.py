@@ -5,28 +5,24 @@ from multiprocessing.dummy import Pool
 def SEO_GOOGLE(param):
     seo = SEO(param)
     seo.getVar()
-    seo.run_sleep(60 * 10, 60 * 20)  # 启动延时 范围 默认 start=2 end=5
-    seo.open_google_engine()
+    seo.open_google_engine(sleep_stop=[60 * 30, 60 * 40])
 
 
 def google_run():
     # 变量配置
-    name = 'g硬蛋'
+    name = 'g众创商城'
     max_page = 30  # 查询最大页数
-    site_url_keyword = 'https://www.ingdan.com'
+    site_url_keyword = 'www.e-store.cn'
     site_urls = [  # 目标站点 子页面 随机1-3个，必须大于三
-        'https://www.ingdan.com/',
-        'https://www.ingdan.com/',
-        'https://www.ingdan.com/',
-        'https://biz.ingdan.com/home/search_product',
-        'https://biz.ingdan.com/knowledge/',
-        'https://biz.ingdan.com/link/',
-        'https://biz.ingdan.com/#machining',
+        'http://www.e-store.cn/',
+        'http://www.e-store.cn/',
+        'http://www.e-store.cn/',
+        'http://www.e-store.cn/',
     ]
-    keywords = ['科技']
+    keywords = ['众创']
 
     run_times = 5 * 12  # 一个关键词的启动次数
-    click_num = 3  # 单次启动 目标 点击次数
+    click_num = 1  # 单次启动 目标 点击次数
     pool = Pool(1)  # 进程
     sleep = [30, 300]  # 目标页面停留时间范围
 
